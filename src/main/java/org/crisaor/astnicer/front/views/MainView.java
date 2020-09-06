@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.crisaor.astorganicer.front.views;
+package org.crisaor.astnicer.front.views;
 
 /**
  *

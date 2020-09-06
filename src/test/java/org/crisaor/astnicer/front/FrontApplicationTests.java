@@ -1,4 +1,4 @@
-package org.crisaor.astorganicer.front;
+package org.crisaor.astnicer.front;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
