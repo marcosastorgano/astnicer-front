@@ -1,0 +1,33 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 18 sept. 2020, 19:38:43
+    Author     : crisaor
+*/
+.main-view {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+    align-self: flex-end;
+}
+
+.center {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.navbar {
+  flex: 1;
+  min-width: 200px;
+}
+
+.content {
+  flex: 4;
+  min-width: 500px;
+}

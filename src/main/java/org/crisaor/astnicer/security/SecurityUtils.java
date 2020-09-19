@@ -5,7 +5,6 @@
  */
 package org.crisaor.astnicer.security;
 
-
 import com.vaadin.flow.server.ServletHelper.RequestType;
 import com.vaadin.flow.shared.ApplicationConstants;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -14,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Stream;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * SecurityUtils takes care of all such static operations that have to do with
@@ -22,34 +22,59 @@ import java.util.stream.Stream;
  */
 public final class SecurityUtils {
 
-	private SecurityUtils() {
-		// Util methods only
-	}
+    private SecurityUtils() {
+        // Util methods only
+    }
 
-	/**
-	 * Tests if the request is an internal framework request. The test consists of
-	 * checking if the request parameter is present and if its value is consistent
-	 * with any of the request types know.
-	 *
-	 * @param request
-	 *            {@link HttpServletRequest}
-	 * @return true if is an internal framework request. False otherwise.
-	 */
-	static boolean isFrameworkInternalRequest(HttpServletRequest request) {
-		final String parameterValue = request.getParameter(ApplicationConstants.REQUEST_TYPE_PARAMETER);
-		return parameterValue != null
-				&& Stream.of(RequestType.values()).anyMatch(r -> r.getIdentifier().equals(parameterValue));
-	}
+    /**
+     * Tests if the request is an internal framework request. The test consists
+     * of checking if the request parameter is present and if its value is
+     * consistent with any of the request types know.
+     *
+     * @param request {@link HttpServletRequest}
+     * @return true if is an internal framework request. False otherwise.
+     */
+    static boolean isFrameworkInternalRequest(HttpServletRequest request) {
+        final String parameterValue = request.getParameter(ApplicationConstants.REQUEST_TYPE_PARAMETER);
+        return parameterValue != null
+                && Stream.of(RequestType.values()).anyMatch(r -> r.getIdentifier().equals(parameterValue));
+    }
 
-	/**
-	 * Tests if some user is authenticated. As Spring Security always will create an {@link AnonymousAuthenticationToken}
-	 * we have to ignore those tokens explicitly.
-	 */
-	static boolean isUserLoggedIn() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		return authentication != null
-				&& !(authentication instanceof AnonymousAuthenticationToken)
-				&& authentication.isAuthenticated();
-	}
+    /**
+     * Tests if some user is authenticated. As Spring Security always will
+     * create an {@link AnonymousAuthenticationToken} we have to ignore those
+     * tokens explicitly.
+     */
+    static boolean isUserLoggedIn() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null
+                && !(authentication instanceof AnonymousAuthenticationToken)
+                && authentication.isAuthenticated();
+    }
+
+    public static boolean isAdminUser() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean hasUserRole = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_MANAGER"));
+
+        return hasUserRole;
+    }
+
+    public static String getUserName() {
+        String res=null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+
+            res = ((UserDetails) principal).getUsername();
+
+        } else {
+
+            res = principal.toString();
+
+        }
+        return res;
+    }
 }
-
